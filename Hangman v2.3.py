@@ -4,7 +4,7 @@ Hangman v2.3
 New update streamlining of code using classes
 
 
-Create a GUI hangman game for STEM day/school
+Purpose to create a GUI hangman game for STEM day/school
 Begin with window to type in word, hidden with *.
 Must display list of letters, hangman screen and _ for letters.
 
@@ -15,23 +15,27 @@ import tkinter as tk
 import turtle
 from sys import exit
 
+#Class to create the alphabet buttons to guess with
 class Buttons:
     
+    #Takes input for location values of button and assigns them to variable
     def __init__(self, letter, column, row):
         self.letter = letter
         self.column = column
         self.row = row
 
+    #Function to create and display each button using arguments given
     def create(self):
         self.tkbutton = tk.Button(window, text=self.letter, bg = colour, font=FONT,
                          command=lambda : check(self.letter))
         self.tkbutton.place(relx=self.column, rely=self.row)
 
-
+#command for EXIT button, close tkinter window and end program
 def EXIT():
     window.destroy()
     exit()
 
+#allows restart without shutting down program, resets turtle canvas, resets word variables, input new word
 def restart():
     global missing
     t.reset()
@@ -45,30 +49,31 @@ def restart():
 #function to check if guess is in word
 def check(guess):
     global wordList, correct, attempt, missing
-    occurences = word.count(guess)
+    occurences = word.count(guess) #Find number of occurences
     if occurences > 0:
-        while occurences > 0:
+        while occurences > 0: #loops replacement for number of occurences
             location = word.index(guess)
             word[location] = "!"
             wordList[location] = guess
             occurences -= 1
             correct += 1
         wordDisplay.config(text=wordList)
-        if correct == total:
+        if correct == total: #Changes text when complete
             wordList = ("Correct! The word was " + final)
             wordDisplay.config(text=wordList)
-    else:
+    else: #changes text when failed
         attempt += 1
         draw(attempt)
     guesses = []
     missing.append(guess)
     guesses.append(guess)
-    guess = eval(guess) #changes string into variable
+    guess = eval(guess)
     guess.tkbutton.place_forget()
     
     #attatch new function to this to trigger drawing
-    
-def draw(step):
+
+#steps to draw hangman on tkinter canvas    
+def draw(step): 
     if step ==1:
         t.penup()
         t.goto(-300, -200)
@@ -128,9 +133,8 @@ def draw(step):
         
 
 
-
+#Function for start button, inputs word into game and begins 
 def START():
-    #note insert refresh options for window in START to allow replayable program
     global word, wordDisplay, wordList, total, correct, attempt, final
     word = box.get()
     final = word
@@ -193,23 +197,25 @@ res.mainloop()
 
 
 
-
+#Create main window
 window = tk.Tk()
+#Adds window title
 window.title("Hangman")
+#Sets window to fullscreen
 window.attributes('-fullscreen', 'True')
 #To add a background colour 
 window.configure(background=colour)
 #To set the window icon window.wm_iconbitmap('icon.ico')
 
-#To add a background colour bg= for forgeground fg=
+#Title widget creation and placement
 title = tk.Label(window, text="HANGMAN", bg=colour, font=("Arial", 50))
 title.place(relx=0.38, rely=0.05)
 
-#creation of exit button
+#EXIT button creation and placement
 EXIT = tk.Button(window, text="EXIT", bg=colour, command=EXIT)
 EXIT.place(relx=0.5, rely=0.95)
 
-
+#Alphabet button creation and placement as part of Buttons class
 A = Buttons('A', column1, row1)
 A.create()
 B = Buttons('B', column2, row1)
@@ -264,20 +270,24 @@ Z = Buttons('Z', column3, row6)
 Z.create()
 
 
-
+#Turtle canvas creation and placement
 canvas = tk.Canvas(window, height=Sheight*0.6, width=Swidth*0.6)
 canvas.place(relx=0.35, rely=row1)
 
+#Turtle setup
 t = turtle.RawTurtle(canvas)
 screen = t.getscreen()
 screen.bgcolor=("white")
 
+#Word to guess display setup and placement
 wordDisplay = tk.Label(window, text="WORD", font=("Arial",30), bg=colour)
 wordDisplay.place(relx=0.1, rely=0.2)
 
+#Restart button setup and placement
 RESTART = tk.Button(bg=colour, text="RESTART", command=restart)
 RESTART.place(relx=0.7, rely=0.95)
 
+#Command to begin first iteration of game
 Word()
 
 window.mainloop()
